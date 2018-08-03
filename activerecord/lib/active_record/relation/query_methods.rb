@@ -346,7 +346,7 @@ module ActiveRecord
       self
     end
 
-    VALID_UNSCOPING_VALUES = Set.new([:where, :select, :group, :order, :lock,
+    VALID_UNSCOPING_VALUES = Set.new([:where, :where_bind, :select, :group, :order, :lock,
                                      :limit, :offset, :joins, :includes, :from,
                                      :readonly, :having])
 
@@ -607,6 +607,23 @@ module ActiveRecord
     end
 
     def where!(opts, *rest) # :nodoc:
+      opts = sanitize_forbidden_attributes(opts)
+      references!(PredicateBuilder.references(opts)) if Hash === opts
+      self.where_clause += where_clause_factory.build(opts, rest)
+      self
+    end
+
+    def where_bind(opts = :chain, *rest)
+      if :chain == opts
+        WhereChain.new(spawn)
+      elsif opts.blank?
+        self
+      else
+        spawn.where_bind!(opts, *rest)
+      end
+    end
+
+    def where_bind!(opts, *rest) # :nodoc:
       opts = sanitize_forbidden_attributes(opts)
       references!(PredicateBuilder.references(opts)) if Hash === opts
       self.where_clause += where_clause_factory.build(opts, rest)
@@ -1167,7 +1184,7 @@ module ActiveRecord
         end
       end
 
-      STRUCTURAL_OR_METHODS = Relation::VALUE_METHODS - [:extending, :where, :having]
+      STRUCTURAL_OR_METHODS = Relation::VALUE_METHODS - [:extending, :where, :where_bind, :having]
       def structurally_incompatible_values_for_or(other)
         STRUCTURAL_OR_METHODS.reject do |method|
           get_value(method) == other.get_value(method)

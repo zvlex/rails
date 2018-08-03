@@ -30,4 +30,6 @@ Gem::Specification.new do |s|
   s.add_dependency "activemodel",   version
 
   s.add_dependency "arel", "~> 8.0"
+
+  s.add_development_dependency "pry-rails"
 end

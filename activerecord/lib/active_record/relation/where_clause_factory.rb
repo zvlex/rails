@@ -8,8 +8,19 @@ module ActiveRecord
 
       def build(opts, other)
         case opts
-        when String, Array
+        when Array
           parts = [klass.send(:sanitize_sql, other.empty? ? opts : ([opts] + other))]
+        when String
+          params = other.first
+
+          if params && params.is_a?(Hash)
+            parts = [opts]
+            params = params.stringify_keys
+
+            attributes, binds = predicate_builder.create_binds(params)
+          else
+            parts = [klass.send(:sanitize_sql, other.empty? ? opts : ([opts] + other))]
+          end
         when Hash
           attributes = predicate_builder.resolve_column_aliases(opts)
           attributes = klass.send(:expand_hash_conditions_for_aggregates, attributes)

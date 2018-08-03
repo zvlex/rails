@@ -7,7 +7,7 @@ module ActiveRecord
 
     SINGLE_VALUE_METHODS = [:limit, :offset, :lock, :readonly, :reordering,
                             :reverse_order, :distinct, :create_with]
-    CLAUSE_METHODS = [:where, :having, :from]
+    CLAUSE_METHODS = [:where, :where_bind, :having, :from]
     INVALID_METHODS_FOR_DELETE_ALL = [:limit, :distinct, :offset, :group, :having]
 
     VALUE_METHODS = MULTI_VALUE_METHODS + SINGLE_VALUE_METHODS + CLAUSE_METHODS
