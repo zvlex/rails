@@ -16,7 +16,7 @@ module ActiveRecord
           if is_custom_method
             params = other.first
 
-            opts.gsub!(/([a-zA-Z_]+\s*[IN|in]\s*\((:[a-zA-Z_]+)\)+)+/).each do |attr|
+            opts = opts.gsub(/([a-zA-Z_]+\s*[IN|in]\s*\((:[a-zA-Z_]+)\)+)+/).each do |attr|
               key = $2.sub(":", '').to_sym
               value = params[key]
 
