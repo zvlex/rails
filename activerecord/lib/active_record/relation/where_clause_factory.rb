@@ -6,18 +6,20 @@ module ActiveRecord
         @predicate_builder = predicate_builder
       end
 
-      def build(opts, other)
+      def build(opts, other, is_custom_method = false)
         case opts
         when Array
           parts = [klass.send(:sanitize_sql, other.empty? ? opts : ([opts] + other))]
         when String
-          params = other.first
+          if is_custom_method
+            params = other.first
 
-          if params && params.is_a?(Hash)
-            parts = [opts]
-            params = params.stringify_keys
+            if params && params.is_a?(Hash)
+              parts = [opts]
+              params = params.stringify_keys
 
-            attributes, binds = predicate_builder.create_binds(params)
+              attributes, binds = predicate_builder.create_binds(params)
+            end
           else
             parts = [klass.send(:sanitize_sql, other.empty? ? opts : ([opts] + other))]
           end
