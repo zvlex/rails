@@ -1,12 +1,14 @@
 module ActiveRecord
   class Relation
     class WhereClauseFactory # :nodoc:
+      attr_accessor :is_custom_method
+
       def initialize(klass, predicate_builder)
         @klass = klass
         @predicate_builder = predicate_builder
       end
 
-      def build(opts, other, is_custom_method = false)
+      def build(opts, other)
         case opts
         when Array
           parts = [klass.send(:sanitize_sql, other.empty? ? opts : ([opts] + other))]
@@ -14,12 +16,17 @@ module ActiveRecord
           if is_custom_method
             params = other.first
 
-            if params && params.is_a?(Hash)
-              parts = [opts]
-              params = params.stringify_keys
+            opts.gsub!(/([a-zA-Z_]+\s*[IN|in]\s*\((:[a-zA-Z_]+)\)+)+/).each do |attr|
+              key = $2.sub(":", '').to_sym
+              value = params[key].is_a?(Array) ? params[key].join(', ') : params[key]
 
-              attributes, binds = predicate_builder.create_binds(params)
+              "IN (#{ value })"
             end
+
+            parts = [opts]
+            params = params.stringify_keys
+
+            attributes, binds = predicate_builder.create_binds(params)
           else
             parts = [klass.send(:sanitize_sql, other.empty? ? opts : ([opts] + other))]
           end

@@ -624,11 +624,11 @@ module ActiveRecord
     end
 
     def where_bind!(opts, *rest) # :nodoc:
-      is_custom_method = true
+      where_clause_factory.is_custom_method = true
 
       opts = sanitize_forbidden_attributes(opts)
       references!(PredicateBuilder.references(opts)) if Hash === opts
-      self.where_clause += where_clause_factory.build(opts, rest, is_custom_method)
+      self.where_clause += where_clause_factory.build(opts, rest)
       self
     end
 
