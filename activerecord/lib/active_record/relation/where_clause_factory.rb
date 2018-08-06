@@ -18,9 +18,19 @@ module ActiveRecord
 
             opts.gsub!(/([a-zA-Z_]+\s*[IN|in]\s*\((:[a-zA-Z_]+)\)+)+/).each do |attr|
               key = $2.sub(":", '').to_sym
-              value = params[key].is_a?(Array) ? params[key].join(', ') : params[key]
+              value = params[key]
 
-              "IN (#{ value })"
+              result = []
+
+              if value.is_a?(Array)
+                value.each do |val|
+                  result << (val.is_a?(String) ? "N'#{val}'" : val)
+                end
+              else
+                result << params[key]
+              end
+
+              "IN (#{ result.join(', ') })"
             end
 
             parts = [opts]
