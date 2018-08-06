@@ -1200,6 +1200,7 @@ module ActiveRecord
         create_with: FROZEN_EMPTY_HASH,
         readonly: false,
         where: Relation::WhereClause.empty,
+        where_bind: Relation::WhereClause.empty,
         having: Relation::WhereClause.empty,
         from: Relation::FromClause.empty
       }
