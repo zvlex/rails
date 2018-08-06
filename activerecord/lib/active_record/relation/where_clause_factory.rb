@@ -16,7 +16,13 @@ module ActiveRecord
           if is_custom_method
             params = other.first
 
-            opts = opts.gsub(/([a-zA-Z_]+\s*[IN|in]\s*\((:[a-zA-Z_]+)\)+)+/).each do |attr|
+            params =
+              params.select do |record|
+                key, _ = record
+                opts.scan(/\b?:#{key}\b/).present?
+              end
+
+            new_opts = opts.gsub(/([a-zA-Z_]+\s*[IN|in]\s*\((:[a-zA-Z_]+)\)?+)+/).each do |attr|
               key = $2.sub(":", '').to_sym
               value = params[key]
 
@@ -33,7 +39,7 @@ module ActiveRecord
               "IN (#{ result.join(', ') })"
             end
 
-            parts = [opts]
+            parts = [new_opts]
             params = params.stringify_keys
 
             attributes, binds = predicate_builder.create_binds(params)
