@@ -14,7 +14,7 @@ module ActiveRecord
           parts = [klass.send(:sanitize_sql, other.empty? ? opts : ([opts] + other))]
         when String
           if is_custom_method
-            params = other.first
+            params = other.first || {}
 
             params =
               params.select do |record|
