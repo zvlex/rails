@@ -42,7 +42,7 @@ module ActiveRecord
             parts = [new_opts]
             params = params.stringify_keys
 
-            attributes, binds = predicate_builder.create_binds(params)
+            attributes, binds = predicate_builder.create_binds(params, is_custom_method)
           else
             parts = [klass.send(:sanitize_sql, other.empty? ? opts : ([opts] + other))]
           end

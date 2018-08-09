@@ -10,6 +10,8 @@ module ActiveRecord
 
     delegate :resolve_column_aliases, to: :table
 
+    attr_accessor :is_custom_method
+
     def initialize(table)
       @table = table
       @handlers = []
@@ -29,7 +31,9 @@ module ActiveRecord
       expand_from_hash(attributes)
     end
 
-    def create_binds(attributes)
+    def create_binds(attributes, is_custom_method = false)
+      @is_custom_method = is_custom_method
+
       attributes = convert_dot_notation_to_hash(attributes)
       create_binds_for_hash(attributes)
     end
@@ -165,7 +169,9 @@ module ActiveRecord
       end
 
       def build_bind_param(column_name, value)
-        Relation::QueryAttribute.new(column_name.to_s, value, table.type(column_name))
+        Relation::QueryAttribute.new(column_name.to_s, value, table.type(column_name)).tap do |query_attr|
+          query_attr.is_custom_method = is_custom_method
+        end
       end
   end
 end

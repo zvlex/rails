@@ -23,6 +23,7 @@ module ActiveRecord
     end
 
     attr_reader :name, :value_before_type_cast, :type
+    attr_accessor :is_custom_method
 
     # This method should not be called directly.
     # Use #from_database or #from_user
