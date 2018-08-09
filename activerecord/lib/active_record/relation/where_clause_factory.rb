@@ -23,7 +23,7 @@ module ActiveRecord
                 opts.scan(/\b?:#{key}\b/).present?
               end
 
-            new_opts = opts.gsub(/([a-zA-Z_]+\s*+[IN|in]\s*+\((\s+*:[a-zA-Z_]+\s*+)\)?+)+/).each do |attr|
+            new_opts = opts.gsub(/(\w+\s*[IN|in]\s*\((\s*:\w+\s*)\)?+)+/).each do |attr|
               key = $2.gsub(/\s+/, '').sub(":", '').to_sym
               value = params[key]
 
