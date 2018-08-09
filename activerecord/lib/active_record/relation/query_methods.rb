@@ -346,6 +346,7 @@ module ActiveRecord
       self
     end
 
+    # EVXBL-7849
     VALID_UNSCOPING_VALUES = Set.new([:where, :where_bind, :select, :group, :order, :lock,
                                      :limit, :offset, :joins, :includes, :from,
                                      :readonly, :having])
@@ -613,6 +614,7 @@ module ActiveRecord
       self
     end
 
+    # EVXBL-7849
     def where_bind(opts = :chain, *rest)
       if :chain == opts
         WhereChain.new(spawn)
@@ -623,6 +625,7 @@ module ActiveRecord
       end
     end
 
+    # EVXBL-7849
     def where_bind!(opts, *rest) # :nodoc:
       where_clause_factory.is_custom_method = true
 
@@ -1186,6 +1189,7 @@ module ActiveRecord
         end
       end
 
+      # EVXBL-7849
       STRUCTURAL_OR_METHODS = Relation::VALUE_METHODS - [:extending, :where, :where_bind, :having]
       def structurally_incompatible_values_for_or(other)
         STRUCTURAL_OR_METHODS.reject do |method|
@@ -1198,6 +1202,7 @@ module ActiveRecord
       end
       alias having_clause_factory where_clause_factory
 
+      # EVXBL-7849
       DEFAULT_VALUES = {
         create_with: FROZEN_EMPTY_HASH,
         readonly: false,

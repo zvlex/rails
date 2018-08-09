@@ -31,6 +31,7 @@ module ActiveRecord
       expand_from_hash(attributes)
     end
 
+    # EVXBL-7849
     def create_binds(attributes, is_custom_method = false)
       @is_custom_method = is_custom_method
 
@@ -168,6 +169,7 @@ module ActiveRecord
         end
       end
 
+      # EVXBL-7849
       def build_bind_param(column_name, value)
         Relation::QueryAttribute.new(column_name.to_s, value, table.type(column_name)).tap do |query_attr|
           query_attr.is_custom_method = is_custom_method

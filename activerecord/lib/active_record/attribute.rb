@@ -23,6 +23,8 @@ module ActiveRecord
     end
 
     attr_reader :name, :value_before_type_cast, :type
+
+    # EVXBL-7849
     attr_accessor :is_custom_method
 
     # This method should not be called directly.

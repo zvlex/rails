@@ -8,6 +8,7 @@ module ActiveRecord
         @predicate_builder = predicate_builder
       end
 
+      # EVXBL-7849
       def build(opts, other)
         case opts
         when Array
