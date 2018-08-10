@@ -159,8 +159,10 @@ module ActiveRecord
         @handlers.detect { |klass, _| klass === object }.last
       end
 
+      # EVXBL-7849
       def can_be_bound?(column_name, value)
-        return if table.associated_with?(column_name)
+        return if table.associated_with?(column_name) && !is_custom_method
+
         case value
         when Array, Range
           table.type(column_name).force_equality?(value)
