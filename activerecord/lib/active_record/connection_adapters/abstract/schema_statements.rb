@@ -1003,14 +1003,18 @@ module ActiveRecord
         insert_versions_sql(versions) if versions.any?
       end
 
+      # EVXBL-8092
       def insert_versions_sql(versions) # :nodoc:
         sm_table = quote_table_name(ActiveRecord::SchemaMigration.table_name)
 
         if versions.is_a?(Array)
-          sql = "INSERT INTO #{sm_table} (version) VALUES\n"
-          sql << versions.map { |v| "(#{quote(v)})" }.join(",\n")
-          sql << ";\n\n"
-          sql
+          sql_array = versions.each_slice(1000).map do |slice_of_versions|
+            sql = "INSERT INTO #{sm_table} (version) VALUES\n"
+            sql << slice_of_versions.map { |v| "(#{quote(v)})" }.join(",\n")
+            sql
+          end
+
+          sql_array.join(";\n\n")
         else
           "INSERT INTO #{sm_table} (version) VALUES (#{quote(versions)});"
         end
