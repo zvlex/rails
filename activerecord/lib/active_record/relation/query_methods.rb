@@ -608,6 +608,8 @@ module ActiveRecord
     end
 
     def where!(opts, *rest) # :nodoc:
+      where_clause_factory.is_custom_method = false
+
       opts = sanitize_forbidden_attributes(opts)
       references!(PredicateBuilder.references(opts)) if Hash === opts
       self.where_clause += where_clause_factory.build(opts, rest)

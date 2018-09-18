@@ -41,7 +41,13 @@ module ActiveRecord
             end
 
             parts = [new_opts]
-            params = params.stringify_keys
+
+            params =
+              if params.respond_to?(:stringify_keys)
+                params.stringify_keys
+              else
+                {}
+              end
 
             attributes, binds = predicate_builder.create_binds(params, is_custom_method)
           else
