@@ -167,7 +167,11 @@ module ActiveRecord
         when Array, Range
           table.type(column_name).force_equality?(value)
         else
-          !value.nil? && handler_for(value).is_a?(BasicObjectHandler)
+          if is_custom_method
+            handler_for(value).is_a?(BasicObjectHandler)
+          else
+            !value.nil? && handler_for(value).is_a?(BasicObjectHandler)
+          end
         end
       end
 
