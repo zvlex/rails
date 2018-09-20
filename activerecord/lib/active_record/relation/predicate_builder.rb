@@ -177,7 +177,14 @@ module ActiveRecord
 
       # EVXBL-7849
       def build_bind_param(column_name, value)
-        Relation::QueryAttribute.new(column_name.to_s, value, table.type(column_name)).tap do |query_attr|
+        column_type =
+          if value.is_a?(String) && column_name == 'number'
+            ActiveModel::Type::Value.new
+          else
+            table.type(column_name)
+          end
+
+        Relation::QueryAttribute.new(column_name.to_s, value, column_type).tap do |query_attr|
           query_attr.is_custom_method = is_custom_method
         end
       end
