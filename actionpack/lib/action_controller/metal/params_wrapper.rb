@@ -91,7 +91,12 @@ module ActionController
       end
 
       def model
-        super || synchronize { super || self.model = _default_wrap_model }
+        # HIS-3376
+        if Rails.env.production?
+          super || synchronize { super || self.model = _default_wrap_model }
+        else
+          super || self.model = _default_wrap_model
+        end
       end
 
       def include
