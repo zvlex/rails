@@ -27,8 +27,20 @@ module ActiveRecord
           @scope ||= build_scope
         end
 
+        # HIS-3990
         def records_for(ids)
-          scope.where(association_key_name => ids)
+          if ids.size == 1
+            scope.where_bind("#{association_key_name} = :#{association_key_name}", bind_filter_hash(ids))
+          else
+            scope.where(association_key_name => ids)
+          end
+        end
+
+        # HIS-3990
+        def bind_filter_hash(ids)
+          Hash.new.tap do |hs|
+            hs[association_key_name.to_sym] = ids.first
+          end
         end
 
         def table
